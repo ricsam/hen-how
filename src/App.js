@@ -52,7 +52,7 @@ function App() {
                 if (!age || !gender || !answer1) {
                   return;
                 }
-                if (answer1 === 'hen') {
+                if (answer1.toLowerCase().replace(/\s/mg, '') === 'hen') {
                   setPage('FINISH');
                 } else {
                   setPage('TWO');
