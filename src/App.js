@@ -16,7 +16,7 @@ function App() {
       {page === 'ONE' && (
         <div>
           <p>
-            Age:{' '}
+            Ålder:{' '}
             <input
               type="text"
               value={age}
@@ -26,7 +26,7 @@ function App() {
             />
           </p>
           <p>
-            Gender:{' '}
+            Kön:{' '}
             <input
               type="text"
               value={gender}
@@ -35,7 +35,7 @@ function App() {
               }}
             />
           </p>
-          <p>
+          <p style={{ marginTop: '64px' }}>
             Kunden gick in i en affär. Där köpte{' '}
             <input
               type="text"
