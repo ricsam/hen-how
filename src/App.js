@@ -1,4 +1,5 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect, useRef } from 'react';
+import axios from 'axios';
 import './App.css';
 
 function App() {
@@ -11,6 +12,31 @@ function App() {
   const handleOptionChange = useCallback(ev => {
     setAnswer2(ev.currentTarget.value);
   }, []);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const hasSent = useRef(false);
+  useEffect(() => {
+    if (page === 'FINISH' && !loading && !hasSent.current) {
+      setLoading(true);
+      hasSent.current = true;
+      axios
+        .post('/api/save', {
+          answers: [age, gender, answer1, answer2, answer3].map(value =>
+            value === null ? '' : value
+          ),
+        })
+        .then(function(response) {
+          console.log('@response', response);
+          setLoading(false);
+        })
+        .catch(function(error) {
+          hasSent.current = false;
+          console.log(error);
+          setLoading(false);
+          setError(error);
+        });
+    }
+  }, [age, answer1, answer2, answer3, gender, loading, page]);
   return (
     <div className="App">
       {page === 'ONE' && (
@@ -36,7 +62,7 @@ function App() {
             />
           </p>
           <p style={{ marginTop: '64px' }}>
-            Kunden gick in i en affär. Där köpte{' '}
+            En person gick in i en affär. Där köpte{' '}
             <input
               type="text"
               value={answer1}
@@ -52,7 +78,7 @@ function App() {
                 if (!age || !gender || !answer1) {
                   return;
                 }
-                if (answer1.toLowerCase().replace(/\s/mg, '') === 'hen') {
+                if (answer1.toLowerCase().replace(/\s/gm, '') === 'hen') {
                   setPage('FINISH');
                 } else {
                   setPage('TWO');
@@ -151,7 +177,19 @@ function App() {
         </div>
       )}
       {page === 'FINISH' && (
-        <div>Tack för {answer1 === 'hen' ? 'ditt' : 'dina'} svar!</div>
+        <div>
+          {error && (
+            <div style={{ color: 'red' }}>
+              Rapportera detta fel: {error}
+              <br />
+            </div>
+          )}
+          {loading ? (
+            'Skickar in ' + (answer1 === 'hen' ? 'ditt' : 'dina') + ' svar...'
+          ) : (
+            <div>Tack för {answer1 === 'hen' ? 'ditt' : 'dina'} svar!</div>
+          )}
+        </div>
       )}
     </div>
   );

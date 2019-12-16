@@ -25,3 +25,5 @@ yarn-error.log*
 
 api/credentials.json
 api/token.json
+
+.env
